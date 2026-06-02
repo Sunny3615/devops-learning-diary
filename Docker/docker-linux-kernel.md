@@ -13,8 +13,6 @@ This made me wonder:
 - Why does Docker need a Linux environment?
 - How does Docker Desktop work on Windows?
 
---- 
-
 ## What I learned
 
 ### Review
@@ -31,7 +29,7 @@ The unprivileged environment where your everyday applications (browsers, games, 
 
 ### Most of the docker containers are Linux containers
 
-Most Docker containers are Linux containers because container technology was originally built on Linux kernel features such as namespaces and cgroups.
+Most Docker containers are Linux containers because container technology was originally built on Linux kernel features such as namespaces for isolation and cgroups(control groups) for resource control.
 
 Containers are essentially isolated Linux processes running with their own userspace filesystem while sharing the host Linux kernel.
 
@@ -42,6 +40,9 @@ Docker containers package the application and its userspace dependencies, but no
 Containers share the host Linux kernel, which is why Linux compatibility is important. The `FROM` instruction usually specifies a Linux userspace filesystem rather than a complete operating system.
 
 A Docker image is basically a userspace filesystem. For example, `FROM ubuntu` includes components such as `bash`, `apt`, `/bin`, `/lib`, and `libc`, but it does not include a Linux kernel.
+
+#### A misunderstanding I had
+> At first, I thought `FROM ubuntu` meant downloading a complete Ubuntu operating system.
 
 ### How does Docker Desktop work on Windows?
 
