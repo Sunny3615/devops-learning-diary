@@ -1,12 +1,24 @@
-# Terraform Azure Networking Exercise
+# Terraform Azure Networking and VM Deployment Exercise
 
 This exercise was completed after finishing the following Microsoft Learn learning path:
 
 https://learn.microsoft.com/en-us/training/paths/az-104-manage-virtual-networks/
+and
+https://learn.microsoft.com/en-us/training/paths/az-104-manage-compute-resources/
 
 ## Architecture Overview
 
 ```text
+Internet
+    │
+    ▼
+Public IP
+    ▼
+Web VM (Nginx)
+    │
+    ▼
+App VM
+
 VNet
 10.0.0.0/16
 
@@ -19,15 +31,22 @@ VNet
 │     Destination: 0.0.0.0/0
 │     Next Hop: 10.0.10.4 (Firewall)
 │
+│   Web VM
+│   Nginx
+│
 ├── AppSubnet
 │   10.0.2.0/24
 │
 │   App NSG
 │
+│   App VM
+│
 ├── DBSubnet
 │   10.0.3.0/24
 │
 │   DB NSG
+│
+│   DB VM(planned, but not practiced because of my free subscription)
 │
 └── FirewallSubnet
     10.0.10.0/24
@@ -80,6 +99,21 @@ Subnets:
 | DBSubnet | 10.0.3.0/24 |
 | FirewallSubnet | 10.0.10.0/24 |
 
+## Virtual Machines
+
+### Web VM
+
+- Ubuntu 22.04 LTS
+- Public IP attached
+- Accessible through SSH
+- Nginx installed
+
+### App VM
+
+- Ubuntu 22.04 LTS
+- Private IP only
+- Deployed into AppSubnet
+
 ## Network Security Groups
 
 ### Web NSG
@@ -118,6 +152,13 @@ rt-web-to-firewall
 - Creating VNets and subnets
 - Associating NSGs with subnets
 - Creating NSG rules
-- Creating and associating route tables
+- Creating Linux virtual machines
+- Creating Public IPs and NICs
+- Connecting to Azure VMs using SSH
+- Installing and validating Nginx
 - Understanding the difference between destinations and next hops
-- Using a User Defined Route (UDR) to direct traffic through a firewall
+- Understanding how NSGs and route tables affect workload traffic
+
+## Limitations
+
+The DB subnet and NSG were created as part of the design, but the DB VM was not deployed due to Azure free subscription regional core quota limits.

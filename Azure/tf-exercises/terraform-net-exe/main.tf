@@ -93,7 +93,7 @@ resource "azurerm_network_security_rule" "web_allow_http" {
 
 resource "azurerm_network_security_rule" "web_allow_https" {
   name                        = "Allow-HTTPS"
-  priority                    = 110
+  priority                    = 120
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
@@ -107,7 +107,7 @@ resource "azurerm_network_security_rule" "web_allow_https" {
 
 resource "azurerm_network_security_rule" "web_deny_ssh" {
   name                        = "Deny-SSH"
-  priority                    = 120
+  priority                    = 130
   direction                   = "Inbound"
   access                      = "Deny"
   protocol                    = "Tcp"
@@ -156,14 +156,33 @@ resource "azurerm_route_table" "web_to_firewall" {
   resource_group_name = azurerm_resource_group.rg.name
 
   route {
-    name           = "default-to-firewall"
-    address_prefix = "0.0.0.0/0"
-    next_hop_type  = "VirtualAppliance"
+    name                   = "default-to-firewall"
+    address_prefix         = "0.0.0.0/0"
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = "10.0.10.4"
   }
 }
+# This association is disabled because no firewall/NVA
+# resource "azurerm_subnet_route_table_association" "web" {
+#   subnet_id = azurerm_subnet.web.id
+#   route_table_id = azurerm_route_table.web_to_firewall.id
+# }
 
-resource "azurerm_subnet_route_table_association" "web" {
-  subnet_id      = azurerm_subnet.web.id
-  route_table_id = azurerm_route_table.web_to_firewall.id
+
+resource "azurerm_network_security_rule" "allow_ssh_my_ip" {
+  name     = "Allow-SSH-My-IP"
+  priority = 110
+
+  direction = "Inbound"
+  access    = "Allow"
+  protocol  = "Tcp"
+
+  source_port_range      = "*"
+  destination_port_range = "22"
+
+  source_address_prefix      = var.my_public_ip_cidr
+  destination_address_prefix = "*"
+
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.web_nsg.name
 }

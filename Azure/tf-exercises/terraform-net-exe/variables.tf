@@ -9,3 +9,8 @@ variable "resource_group_name" {
   default     = "rg-tf-network-exe"
   description = "The name of the resource group."
 }
+
+variable "my_public_ip_cidr" {
+  type        = string
+  description = "My public IP address in CIDR format for SSH access."
+}
