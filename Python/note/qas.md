@@ -96,3 +96,52 @@ Deactivate it:
 deactivate
 ```
 
+## 6. `if __name__ == "__main__":` review
+`_name__` is a special variable automatically created by Python.
+
+Its value depends on how the Python file is executed.
+
+If the file is run directly, __name__ is "__main__".
+If the file is imported by another Python file, __name__ is the module name (usually the filename without .py).
+
+### Example
+add_op.py
+```python
+def add(a, b):
+    return a + b
+
+print(f"This is not in the __name__ == '__main__' loop")
+print(__name__)
+print(add(100, 100))
+
+if __name__ == "__main__":
+    print(f"This is in the __name__ == '__main__' loop")
+    print(__name__)
+    print(add(100, 100))
+```
+
+main.py
+```python
+import add_op
+```
+
+Running `python main.py`, output:
+```bash
+This is not in the __name__ == '__main__' loop
+add_op
+200
+```
+> When main.py imports add_op, Python executes everything outside the if `__name__ == "__main__"`: block. Because add_op.py is imported rather than executed directly, Python sets `__name__ = "add_op"`
+
+Running `python add_op.py`, output:
+```bash
+This is not in the __name__ == '__main__' loop
+__main__
+200
+This is in the __name__ == '__main__' loop
+__main__
+200
+```
+> Since the file add_op.py is run directly, python will set `__name__ == "__main__"`.
+
+So `if __name__ == "__main__":` tells Python, Only execute this code when the file is run directly.
